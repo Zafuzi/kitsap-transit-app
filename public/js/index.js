@@ -1,10 +1,7 @@
 $(function() {
   geoLocate();
 
-  $('#routes').change(function(e) {
-    var option = $(this).find(':selected').val();
-    getStopsForRoute(option);
-  });
+
 });
 
 var transitArray = [],
@@ -14,9 +11,15 @@ var transitArray = [],
 function geoLocate() {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      //getGoogleMapsApi(position.coords.latitude, position.coords.longitude);
-      getGoogleMapsApi(47.6062, -122.3321);
-      $('#start-input').attr('placeholder', "Your Location");
+      var userLocation = new Address(position.coords.latitude, position.coords.longitude);
+      userLocation.getAddress();
+      userLocation.getRoutes(userLocation);
+
+      $('#routes').change(function(e) {
+        var option = $(this).find(':selected').val();
+        userLocation.getStopsForRoute(userLocation, option);
+      });
+
     }, function(err) {
       switch (err) {
         case 1:
@@ -28,8 +31,6 @@ function geoLocate() {
           console.log("Position unavailable");
           break;
       }
-      $('#start-input').attr('placeholder', "Seattle, Wa");
-      getGoogleMapsApi(47.6062, -122.3321);
     });
   } else {
     getGoogleMapsApi(47.6062, -122.3321);
@@ -106,80 +107,7 @@ function initMap(lat, lon) {
   });
 }
 
-function getLocation(lat, lon) {
-  url = 'http://api.pugetsound.onebusaway.org/api/where/routes-for-location/.json?key=6eda2aa3-7b7d-4fb6-8a42-3f6040b4b58a&lat=' + lat + '&lon=' + lon;
-  fetch(url)
-    .then(function(response) {
-      if (response.status == 200) {
-        return response.json();
-      }
-    }).then(function(response) {
-      var marker, option;
-      console.log(response);
-      $('#routes').html('');
-      response.data.list.map(function(data) {
-        console.log(data);
-        if (data.shortName.length === 0) {
-          data.shortName = 0;
-        }
-        if (data.description.length === 0) {
-          data.description = data.longName;
-        }
-        option = $('<option />');
-        $(option).attr('value', data.id);
-        $(option).text('(' + data.shortName + ') ' + data.description);
-        $('#routes').append(option);
-      });
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
-}
-
-function getStopsForRoute(route) {
-  url = 'http://api.pugetsound.onebusaway.org/api/where/stops-for-route/' + route + '/.json?key=6eda2aa3-7b7d-4fb6-8a42-3f6040b4b58a';
-  fetch(url)
-    .then(function(response) {
-      return response.json();
-    }).then(function(response) {
-      clearMarkers();
-      routeArray = [];
-      response.data.entry.stopIds.map(function(stop) {
-        getStopData(stop);
-      });
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
-}
-
 var lat, lon;
-
-function getStopData(stop_id) {
-  url = 'http://api.pugetsound.onebusaway.org/api/where/stop/' + stop_id + '/.json?key=6eda2aa3-7b7d-4fb6-8a42-3f6040b4b58a';
-  fetch(url)
-    .then(function(response) {
-      return response.json();
-    }).then(function(response) {
-      lat = response.data.entry.lat;
-      lon = response.data.entry.lon;
-      var location = {lat: lat, lng: lon};
-      markers.push(new google.maps.Marker({
-        map: map,
-        position: location,
-        title: response.data.entry.name
-      }));
-      routeArray.push(response);
-
-      var option = $('<option />');
-      $(option).attr('value', response.data.entry.id);
-      $(option).text('(' + response.data.entry.code + ') ' + response.data.entry.name);
-      $('#stops').append(option);
-    })
-    .catch(function(err) {
-      console.log(err);
-    });
-}
 
 function clearMarkers() {
   markers.forEach(function(marker) {
