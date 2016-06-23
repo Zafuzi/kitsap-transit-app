@@ -7,6 +7,12 @@ var transitArray = [],
   routeArray = [],
   userLocation;
 
+/**
+ * NOTE this really needs some work, calling evertything here is going to end up
+ * forcing me to make a huge function that will block offline processes.
+ * Consider moving them to the indexController or some other class for easier integration.
+ * That way this file can be used solely for online functions.
+ */
 function geoLocate() {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -19,6 +25,11 @@ function geoLocate() {
       $('#routes').change(function(e) {
         var option = $(this).find(':selected').val();
         userLocation.getStopsForRoute(userLocation, option);
+      });
+
+      $('#stops').change(function(e) {
+        var option = $(this).find(':selected').val();
+        userLocation.getStopData(userLocation, option);
       });
 
       getGoogleMapsApi(userLocation.lat, userLocation.lng);
@@ -41,7 +52,7 @@ function geoLocate() {
 }
 
 function getGoogleMapsApi(lat, lon) {
-  $.getScript('https://maps.googleapis.com/maps/api/js?key='+ GOOGLE_API_KEY +'&libraries=places')
+  $.getScript('https://maps.googleapis.com/maps/api/js?key=' + GOOGLE_API_KEY + '&libraries=places')
     .done(function(script, textStatus) {
       console.log(textStatus);
       initMap(lat, lon);
@@ -115,6 +126,4 @@ function clearMarkers() {
   });
   markers = [];
 }
-
-
-// TODO get the stop schedule, allow the user to search for a stop, and make the map not suck dick.
+// TODO get the stop schedule, allow the user to search for a stop

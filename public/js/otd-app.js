@@ -1,5 +1,6 @@
 var GOOGLE_API_KEY = "AIzaSyDoXbsrpRCMR3Iwd-qSwVJmFfyEpFZvmqc";
 var OTD_API_KEY = "6eda2aa3-7b7d-4fb6-8a42-3f6040b4b58a";
+
 class Address {
   constructor(lat, lng) {
     this.lat = lat;
@@ -30,27 +31,31 @@ class Address {
         }
       }).then(function(response) {
         var marker, option;
-        console.log(response);
         if (response.data.list.length === 0) {
           parent.lat = 47.6062;
           parent.lng = -122.3321;
           parent.getAddress();
           parent.getRoutes(parent);
-          console.log(self.lat);
         }
         $('#routes').html('');
-        response.data.list.map(function(data) {
-          console.log(data);
-          if (data.shortName.length === 0) {
-            data.shortName = 0;
-          }
-          if (data.description.length === 0) {
-            data.description = data.longName;
-          }
-          option = $('<option />');
-          $(option).attr('value', data.id);
-          $(option).text('(' + data.shortName + ') ' + data.description);
-          $('#routes').append(option);
+        ic.dbPromise.then(function(db){
+          if(!db) return;
+          var index = db.transaction('routes', 'readwrite')
+          .objectStore('routes');
+          response.data.list.map(function(data) {
+            if (data.shortName.length === 0) {
+              data.shortName = 0;
+            }
+            if (data.description.length === 0) {
+              data.description = data.longName;
+            }
+            console.log(data.id);
+            index.put(data);
+            option = $('<option />');
+            $(option).attr('value', data.id);
+            $(option).text('(' + data.shortName + ') ' + data.description);
+            $('#routes').append(option);
+          });
         });
       })
       .catch(function(err) {
@@ -65,7 +70,7 @@ class Address {
         return response.json();
       }).then(function(response) {
         clearMarkers();
-        routeArray = [];
+        $('#stops').html('');
         response.data.entry.stopIds.map(function(stop) {
           parent.getStopData(parent, stop);
         });
@@ -90,7 +95,13 @@ class Address {
           position: stopLocation,
           title: response.data.entry.name
         }));
-        routeArray.push(response);
+        // should add to DB first.
+        ic.dbPromise.then(function(db){
+          if(!db) return;
+          var index = db.transaction('stops', 'readwrite')
+          .objectStore('stops');
+          index.put(response.data.entry);
+        });
 
         var option = $('<option />');
         $(option).attr('value', response.data.entry.id);
