@@ -1,0 +1,18 @@
+{
+  "name": "sound-transit-app",
+  "version": "1.0.0",
+  "description": "A simple app that allows users to see transit information in Seattle",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "gulp"
+  },
+  "author": "Zachary Foutz (DauntlessTech)",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp-copy": "0.0.2",
+    "gulp-serve": "^1.2.0",
+    "jszip": "^3.0.0",
+    "wingcss": "^0.1.2"
+  }
+}
