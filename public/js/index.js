@@ -1,17 +1,18 @@
 $(function() {
   geoLocate();
-
-
 });
 
 var transitArray = [],
   markers = [],
-  routeArray = [];
+  routeArray = [],
+  userLocation;
 
 function geoLocate() {
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      var userLocation = new Address(position.coords.latitude, position.coords.longitude);
+      // assign a new address class to userLocation using current location
+      // uses default seattle location if there is no route data nearby
+      userLocation = new Address(position.coords.latitude, position.coords.longitude);
       userLocation.getAddress();
       userLocation.getRoutes(userLocation);
 
@@ -19,6 +20,8 @@ function geoLocate() {
         var option = $(this).find(':selected').val();
         userLocation.getStopsForRoute(userLocation, option);
       });
+
+      getGoogleMapsApi(userLocation.lat, userLocation.lng);
 
     }, function(err) {
       switch (err) {
@@ -38,7 +41,7 @@ function geoLocate() {
 }
 
 function getGoogleMapsApi(lat, lon) {
-  $.getScript('https://maps.googleapis.com/maps/api/js?key=AIzaSyB01QCwQJ8u1CO3pW25Any9I0YgEdBuyEA&libraries=places')
+  $.getScript('https://maps.googleapis.com/maps/api/js?key='+ GOOGLE_API_KEY +'&libraries=places')
     .done(function(script, textStatus) {
       console.log(textStatus);
       initMap(lat, lon);
@@ -69,7 +72,6 @@ function initMap(lat, lon) {
   });
 
   markers = [];
-  getLocation(lat, lon);
   searchBox.addListener('places_changed', function() {
     var places = searchBox.getPlaces();
     if (places.length === 0) {
@@ -88,7 +90,7 @@ function initMap(lat, lon) {
         anchor: new google.maps.Point(17, 34),
         scaledSize: new google.maps.Size(25, 25)
       };
-      getLocation(place.geometry.location.lat(), place.geometry.location.lng());
+      userLocation.getRoutes(place.geometry.location.lat(), place.geometry.location.lng());
       markers.push(new google.maps.Marker({
         map: map,
         icon: icon,
@@ -106,8 +108,6 @@ function initMap(lat, lon) {
     map.fitBounds(bounds);
   });
 }
-
-var lat, lon;
 
 function clearMarkers() {
   markers.forEach(function(marker) {

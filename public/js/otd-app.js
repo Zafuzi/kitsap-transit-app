@@ -2,9 +2,6 @@ var GOOGLE_API_KEY = "AIzaSyDoXbsrpRCMR3Iwd-qSwVJmFfyEpFZvmqc";
 var OTD_API_KEY = "6eda2aa3-7b7d-4fb6-8a42-3f6040b4b58a";
 class Address {
   constructor(lat, lng) {
-
-    var self = this;
-
     this.lat = lat;
     this.lng = lng;
   }
@@ -70,7 +67,7 @@ class Address {
         clearMarkers();
         routeArray = [];
         response.data.entry.stopIds.map(function(stop) {
-          parent.getStopData(stop);
+          parent.getStopData(parent, stop);
         });
       })
       .catch(function(err) {
@@ -79,20 +76,18 @@ class Address {
   }
 
   getStopData(parent, stop_id) {
-    var url = 'http://api.pugetsound.onebusaway.org/api/where/stop/' + stop_id + '/.json?key=6eda2aa3-7b7d-4fb6-8a42-3f6040b4b58a';
+    var url = 'http://api.pugetsound.onebusaway.org/api/where/stop/' + stop_id + '/.json?key=' + OTD_API_KEY;
     fetch(url)
       .then(function(response) {
         return response.json();
       }).then(function(response) {
-        lat = response.data.entry.lat;
-        lon = response.data.entry.lon;
-        var location = {
-          lat: lat,
-          lng: lon
+        var stopLocation = {
+          lat: response.data.entry.lat,
+          lng: response.data.entry.lon
         };
         markers.push(new google.maps.Marker({
           map: map,
-          position: location,
+          position: stopLocation,
           title: response.data.entry.name
         }));
         routeArray.push(response);
