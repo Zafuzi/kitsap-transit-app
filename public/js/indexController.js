@@ -1,8 +1,8 @@
 class IndexController {
   constructor(){
-    this.dbPromise = this._openDatabase();
     this._registerServiceWorker();
   }
+
   _registerServiceWorker(){
     // Register the ServiceWorker
     navigator.serviceWorker.register('sw.js', {
@@ -44,7 +44,7 @@ class IndexController {
           });
           store.createIndex('description', 'description');
         case 1:
-          var store = upgradeDb.createObjectStore('stops', {
+          store = upgradeDb.createObjectStore('stops', {
             keyPath: 'id'
           });
           store.createIndex('name', 'name');

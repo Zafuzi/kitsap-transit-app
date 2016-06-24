@@ -1,4 +1,4 @@
-var CACHE_NAME = 'transit-app-cache-v6';
+var CACHE_NAME = 'transit-app-cache-v2';
 var REQUIRED_FILES = [
   '/',
   '/css/vendor/wing.min.css',
@@ -12,6 +12,9 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(function(cache) {
+        if(cache != CACHE_NAME){
+          cache.delete(cache);
+        }
         return cache.addAll(REQUIRED_FILES);
       })
       .then(function() {
@@ -34,5 +37,13 @@ self.addEventListener('fetch', function(event) {
 });
 
 self.addEventListener('activate', function(event) {
-  event.waitUntil(self.clients.claim());
+   event.waitUntil(
+    caches.keys().then(function(keyList) {
+      return Promise.all(keyList.map(function(key) {
+        if (CACHE_NAME.indexOf(key) === -1) {
+          return caches.delete(key);
+        }
+      }));
+    })
+  );
 });

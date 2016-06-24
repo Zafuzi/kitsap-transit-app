@@ -5,6 +5,10 @@ class Address {
   constructor(lat, lng) {
     this.lat = lat;
     this.lng = lng;
+    var ic = new IndexController();
+    this.dbPromise = ic._openDatabase();
+
+    console.log(this.dbPromise);
   }
 
   getAddress() {
@@ -23,8 +27,16 @@ class Address {
   }
 
   getRoutes(parent) {
+    var address = parent;
     var url = 'http://api.pugetsound.onebusaway.org/api/where/routes-for-location/.json?key=' + OTD_API_KEY + '&lat=' + this.lat + '&lon=' + this.lng;
-    fetch(url)
+    var myHeaders = new Headers();
+
+    var myInit = { method: 'GET',
+                   headers: myHeaders,
+                   mode: 'cors',
+                   cache: 'default' };
+
+    fetch(url, myInit)
       .then(function(response) {
         if (response.status == 200) {
           return response.json();
@@ -32,13 +44,13 @@ class Address {
       }).then(function(response) {
         var marker, option;
         if (response.data.list.length === 0) {
-          parent.lat = 47.6062;
-          parent.lng = -122.3321;
-          parent.getAddress();
-          parent.getRoutes(parent);
+          address.lat = 47.6062;
+          address.lng = -122.3321;
+          address.getAddress();
+          address.getRoutes(parent);
         }
         $('#routes').html('');
-        ic.dbPromise.then(function(db){
+        parent.dbPromise.then(function(db){
           if(!db) return;
           var index = db.transaction('routes', 'readwrite')
           .objectStore('routes');
@@ -81,6 +93,7 @@ class Address {
   }
 
   getStopData(parent, stop_id) {
+    var address = this;
     var url = 'http://api.pugetsound.onebusaway.org/api/where/stop/' + stop_id + '/.json?key=' + OTD_API_KEY;
     fetch(url)
       .then(function(response) {
@@ -96,7 +109,7 @@ class Address {
           title: response.data.entry.name
         }));
         // should add to DB first.
-        ic.dbPromise.then(function(db){
+        address.ic.dbPromise.then(function(db){
           if(!db) return;
           var index = db.transaction('stops', 'readwrite')
           .objectStore('stops');
