@@ -5,10 +5,7 @@ class Address {
   constructor(lat, lng) {
     this.lat = lat;
     this.lng = lng;
-    var ic = new IndexController();
-    this.dbPromise = ic._openDatabase();
-
-    console.log(this.dbPromise);
+    this.dbPromise = new IndexController()._openDatabase();
   }
 
   getAddress() {
@@ -26,9 +23,9 @@ class Address {
       });
   }
 
-  getRoutes(parent) {
-    var address = parent;
-    var url = 'http://api.pugetsound.onebusaway.org/api/where/routes-for-location/.json?key=' + OTD_API_KEY + '&lat=' + this.lat + '&lon=' + this.lng;
+  getRoutes() {
+    var address = this;
+    var url = 'http://api.pugetsound.onebusaway.org/api/where/stops-for-location/.json?key=' + OTD_API_KEY + '&lat=' + this.lat + '&lon=' + this.lng;
     var myHeaders = new Headers();
 
     var myInit = { method: 'GET',
@@ -42,15 +39,16 @@ class Address {
           return response.json();
         }
       }).then(function(response) {
+        console.log(response);
         var marker, option;
         if (response.data.list.length === 0) {
           address.lat = 47.6062;
           address.lng = -122.3321;
           address.getAddress();
-          address.getRoutes(parent);
+          address.getRoutes();
         }
         $('#routes').html('');
-        parent.dbPromise.then(function(db){
+        address.dbPromise.then(function(db){
           if(!db) return;
           var index = db.transaction('routes', 'readwrite')
           .objectStore('routes');
@@ -75,7 +73,8 @@ class Address {
       });
   }
 
-  getStopsForRoute(parent, route) {
+  getStopsForRoute(route) {
+    var address = this;
     var url = 'http://api.pugetsound.onebusaway.org/api/where/stops-for-route/' + route + '/.json?key=' + OTD_API_KEY;
     fetch(url)
       .then(function(response) {
@@ -83,8 +82,9 @@ class Address {
       }).then(function(response) {
         clearMarkers();
         $('#stops').html('');
+        console.log(response);
         response.data.entry.stopIds.map(function(stop) {
-          parent.getStopData(parent, stop);
+          address.getStopData(stop);
         });
       })
       .catch(function(err) {
@@ -92,7 +92,7 @@ class Address {
       });
   }
 
-  getStopData(parent, stop_id) {
+  getStopData(stop_id) {
     var address = this;
     var url = 'http://api.pugetsound.onebusaway.org/api/where/stop/' + stop_id + '/.json?key=' + OTD_API_KEY;
     fetch(url)
@@ -109,7 +109,7 @@ class Address {
           title: response.data.entry.name
         }));
         // should add to DB first.
-        address.ic.dbPromise.then(function(db){
+        address.dbPromise.then(function(db){
           if(!db) return;
           var index = db.transaction('stops', 'readwrite')
           .objectStore('stops');

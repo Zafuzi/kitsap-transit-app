@@ -10,41 +10,42 @@
   </head>
 
   <body>
-    <header class="container">
-      <nav class="row">
-        <span class="brand-icon"></span>
-        <h1 class="nav-title">
-          Sound Transit
-        </h1>
-        <div class="pull-right navbar-links">
-          <a href="" class="text-center">Home</a>
-          <a href="" class="text-center">About</a>
-          <a href="" class="text-center">Contact</a>
+    <header>
+      <a href="#" class="menu-toggle" id="menu-hidden">
+        <i class="material-icons">menu</i>
+      </a>
+      <nav class="col-2 navbar">
+        <div class="navbar-links">
+          <a href="#" class="menu-toggle">
+            <i class="material-icons">menu</i>
+          </a>
+          <a href="#" class="">
+            <i class="material-icons">directions_bus</i>
+          </a>
+          <a href="#" class="">
+            <i class="material-icons">info</i>
+          </a>
+          <a href="#" class="">
+            <i class="material-icons">gps_fixed</i>
+          </a>
+          <a href="#" class="">
+            <i class="material-icons">contacts</i>
+          </a>
         </div>
       </nav>
     </header>
 
+    <div class="full-screen map" id="map"></div>
     <main class="container">
-      <section class="row">
+      <section class="container  map-overlay">
+        <input id="start-input" class="col-12"/>
         <article class="col-12">
+          <h5>Choose a route</h5>
           <label for="routes">
-            Choose a Route For:
             <p id="route_header"></p>
             <select id="routes"></select>
           </label>
         </article>
-        <article class="col-12">
-          <label for="stop-input">
-            Choose a Stop
-            <select id="stops"></select>
-          </label>
-        </article>
-        <article class="col-12">
-          <input id="start-input" class="col-6"/>
-          <div class="col-6 map" id="map"></div>
-        </article>
-        <div class="row"></div>
-
       </section>
     </main>
 
@@ -52,10 +53,26 @@
     <script src="js/vendor/idb.js"></script>
 
     <script src="js/indexController.js"></script>
+    <script src="js/map.js"></script>
 
     <script src="js/otd-app.js"></script>
-    <script src="js/map.js"></script>
     <script src="js/index.js"></script>
+
+    <script async defer type="text/javascript">
+      WebFontConfig = {
+        google: {
+          families: ['Raleway,500,700::latin', 'Lato,300,500,900::latin', 'Material+Icons::latin']
+        }
+      };
+      (function () {
+        var wf = document.createElement('script');
+        wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+      })();
+    </script>
   </body>
 
 </html>

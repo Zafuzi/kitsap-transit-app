@@ -1,10 +1,12 @@
 $(function() {
   geoLocate();
+  $('.menu-toggle').click(function(){
+    $('.navbar').animate({width: 'toggle'});
+  });
 });
 
 var transitArray = [],
   markers = [],
-  routeArray = [],
   userLocation;
 
 /**
@@ -14,26 +16,11 @@ var transitArray = [],
  * That way this file can be used solely for online functions.
  */
 function geoLocate() {
+  var lat, lng;
   if ("geolocation" in navigator) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      // assign a new address class to userLocation using current location
-      // uses default seattle location if there is no route data nearby
-      userLocation = new Address(position.coords.latitude, position.coords.longitude);
-      userLocation.getAddress();
-      userLocation.getRoutes(userLocation);
-
-      $('#routes').change(function(e) {
-        var option = $(this).find(':selected').val();
-        userLocation.getStopsForRoute(userLocation, option);
-      });
-
-      $('#stops').change(function(e) {
-        var option = $(this).find(':selected').val();
-        userLocation.getStopData(userLocation, option);
-      });
-
-      getGoogleMapsApi(userLocation.lat, userLocation.lng);
-
+      lat = position.coords.latitude;
+      lng = position.coords.longitude;
     }, function(err) {
       switch (err) {
         case 1:
@@ -47,8 +34,26 @@ function geoLocate() {
       }
     });
   } else {
-    getGoogleMapsApi(47.6062, -122.3321);
+    lat = 47.664792;
+    lng = -122.320753;
   }
+
+  userLocation = new Address(lat, lng);
+  userLocation.getAddress();
+  userLocation.getRoutes();
+
+  $('#routes').change(function(e) {
+    var option = $(this).find(':selected').val();
+    console.log(option);
+    userLocation.getStopsForRoute(option);
+  });
+
+  $('#stops').change(function(e) {
+    var option = $(this).find(':selected').val();
+    userLocation.getStopData(option);
+  });
+
+  getGoogleMapsApi(userLocation.lat, userLocation.lng);
 }
 
 function getGoogleMapsApi(lat, lon) {

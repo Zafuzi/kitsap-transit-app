@@ -1,3 +1,4 @@
+var map;
 class GoogleMap{
   constructor(lat, lng){
     this.lat = lat;
@@ -7,13 +8,14 @@ class GoogleMap{
   }
   _initMap(){
     var gMap = this;
-    var map = new google.maps.Map($('#map')[0], {
+    map = new google.maps.Map($('#map')[0], {
       center: {
         lat: gMap.lat,
         lng: gMap.lng
       },
       zoom: 15,
-      styles: gMap.styleArray
+      styles: gMap.styleArray,
+      disableDefaultUI: true
     });
 
     // Create the search box and link it to the UI element.
