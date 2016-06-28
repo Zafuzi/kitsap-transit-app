@@ -42,22 +42,9 @@ button {
   background: #66BB6A;
   padding: 1rem;
 }
-#menu-hidden {
-  text-decoration: none;
-  color: #fff;
-  height: auto;
-  width: auto;
-  display: inline-block;
-  position: fixed;
-  top: 1rem;
-  left: 16px;
-  z-index: 1;
-  background-color: #455A64;
-  border-radius: 3px;
-  padding: 1rem;
-}
-#menu-hidden:hover {
-  color: #9e9e9e;
+.navbar {
+  width: 210px;
+  margin-left: -210px;
 }
 .navbar-links a {
   text-decoration: none;
@@ -87,7 +74,7 @@ nav {
   position: fixed;
   left: 0;
   top: 0;
-  width: 100px;
+  width: 210px;
   height: 100vh;
   background-color: #455A64;
   z-index: 1;
@@ -95,7 +82,7 @@ nav {
 .navbar-links {
   position: absolute;
   top: 1rem;
-  left: 16px;
+  width: 80%;
 }
 .nav-title {
   font-size: 2rem;
@@ -105,7 +92,15 @@ nav {
 /* Map
 ------------------------------------------*/
 
-.map {
+.map-overlay {
+  width: 50vw;
+  position: fixed;
+  top: 1rem;
+  left: 128px;
+  z-index: 99;
+  padding: 25px;
+}
+.map-container {
   height: 100vh;
   width: 100vw;
   margin: 0;
@@ -114,15 +109,38 @@ nav {
   top: 0;
   left: 0;
 }
-.map-overlay {
+.search-container {
   width: 50vw;
-  position: fixed;
-  top: 1rem;
-  right: 16px;
-  z-index: 99;
-  background-color: #81C784;
-  box-shadow: .1em .1em .2em #9e9e9e;
-  padding: 25px;
+  position: absolute;
+  right: 25vw;
+  background-color: #fff;
+  padding: 5px 0 0 0;
+  vertical-align: middle;
+}
+#search-toggle {
+  background-color: rgba(0, 0, 0, 0);
+  width: auto;
+  height: inherit;
+  margin: 0 -5px 0 0;
+  padding: 10px;
+  z-index: 2;
+  display: inline;
+  color: #9e9e9e;
+}
+#searchBox {
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0);
+  border: 0px;
+  margin-left: -5px;
+  display: inline;
+  width: 80%;
+}
+@media (max-width: 480px) {
+  .search-container {
+    width: 95vw;
+    position: absolute;
+    right: 0;
+  }
 }
 
 /* Headers and Labels
@@ -136,4 +154,7 @@ h5 {
 }
 label {
   color: white;
+}
+;
+
 }

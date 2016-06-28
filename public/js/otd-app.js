@@ -26,14 +26,8 @@ class Address {
   getRoutes() {
     var address = this;
     var url = 'http://api.pugetsound.onebusaway.org/api/where/stops-for-location/.json?key=' + OTD_API_KEY + '&lat=' + this.lat + '&lon=' + this.lng;
-    var myHeaders = new Headers();
 
-    var myInit = { method: 'GET',
-                   headers: myHeaders,
-                   mode: 'cors',
-                   cache: 'default' };
-
-    fetch(url, myInit)
+    fetch(url)
       .then(function(response) {
         if (response.status == 200) {
           return response.json();
