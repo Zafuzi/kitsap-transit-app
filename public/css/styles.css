@@ -41,6 +41,8 @@ a {
 button {
   background: #66BB6A;
   padding: 1rem;
+  width: 100%;
+  margin: .1em;
 }
 .navbar {
   width: 210px;
@@ -108,6 +110,14 @@ nav {
   position: fixed;
   top: 0;
   left: 0;
+}
+.popup-content {}
+.popup-content h5 {
+  color: #424242;
+  text-shadow: none;
+  font-size: 1.2rem;
+  line-height: 1.5rem;
+  letter-spacing: .25rem;
 }
 .search-container {
   width: 50vw;

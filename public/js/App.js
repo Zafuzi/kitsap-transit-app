@@ -1,9 +1,4 @@
-  var ul;
-  var tf;
-  var map;
-
-  var lat,
-    lng;
+var tf, map, lat, lng;
 
   function getLocation() {
     if (navigator.geolocation) {
@@ -17,7 +12,6 @@
   function setLocation(position) {
     lat = position.coords.latitude;
     lng = position.coords.longitude;
-    console.log(lat);
     startApp();
   }
 
@@ -39,6 +33,10 @@
     });
     $('.menu-toggle').click(function() {
       toggleSidebar();
+    });
+
+    $('.yes-destination').click(function(){
+
     });
   }
 
