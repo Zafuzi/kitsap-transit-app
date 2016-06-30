@@ -7,47 +7,40 @@
     <title>Sound Transit</title>
     <link href="css/vendor/wing.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
-    <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
-    <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet'/>
   </head>
 
   <body>
-    <header>
-
-      <nav class="col-2 navbar">
-        <div class="navbar-links">
-          <a href="#" class="">
-            Directions
-            <i class="material-icons pull-right">directions_bus</i>
-          </a>
-          <a href="#" class="">
-            Info
-            <i class="material-icons pull-right">info</i>
-          </a>
-          <a href="#" class="">
-            Location
-            <i class="material-icons pull-right">gps_fixed</i>
-          </a>
-          <a href="#" class="">
-            Contact Us
-            <i class="material-icons pull-right">contacts</i>
-          </a>
-        </div>
-      </nav>
-    </header>
 
     <main>
-      <div class="map-container">
-        <div class="full-screen map" id="map"></div>
-      </div>
+      <section class="container">
+        <article class="row">
+          <h1>
+            Transit Data API
+          </h1>
+        </article>
+        <article class="row">
+          <div class="col-6">
+            <select type="text" id="u-search">
+              <option value="default">default</option>
+            </select>
+          </div>
+        </article>
+      </section>
     </main>
 
     <script async defer src="js/fonts.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?v=3&libraries=places&sensor=false"></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?libraries=places,geocode&sensor=false"></script> -->
     <script src="js/vendor/jquery.min.js"></script>
+    <script src="js/vendor/jszip.min.js"></script>
+    <script src="js/vendor/idb.js"></script>
+
+    <script src="js/indexController.js"></script>
     <script src="js/TransitFeeds.js"></script>
-    <script src="js/Map.js"></script>
     <script src="js/App.js"></script>
+
+    <script type="text/javascript" src="//stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
+    <script type="text/javascript" src="js/vendor/papaparse.min.js"></script>
+    <script></script>
   </body>
 
 </html>

@@ -1,50 +1,66 @@
-var tf, map, lat, lng;
+var tf, lat, lng, zip, fileArray=[], dataArray=[];
 
-  function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(setLocation);
-      console.log(lat);
-    } else {
-      console.log("No support");
-    }
+$(function() {
+  getLocation();
+  addHandlers();
+});
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      lat = position.coords.latitude;
+      lng = position.coords.longitude;
+      startApp();
+    });
+
+  } else {
+    console.log("No support");
   }
+}
 
-  function setLocation(position) {
-    lat = position.coords.latitude;
-    lng = position.coords.longitude;
-    startApp();
-  }
+function startApp() {
+  tf = new TransitFeeds(lat, lng);
+  tf._getLocations();
+}
 
-  function startApp() {
-    tf = new TransitFeeds();
-    map = new Map(lat, lng);
-    map._initMap();
-  }
-
-  $(function() {
-    getLocation();
-    addHandlers();
+function addHandlers() {
+  $('.menu-toggle').click(function() {
+    toggleSidebar();
   });
+}
 
-
-  function addHandlers() {
-    $('#search-toggle').click(function() {
-      console.log("clicked");
+function getZip(url) {
+  fileArray = [];
+  fetch(url).then(function(response) {
+    if (response.status === 200 || response.status === 0) {
+      return Promise.resolve(response.arrayBuffer());
+    }
+  }).then(JSZip.loadAsync).then(function readfile(zip) {
+    for(var file in zip.files){
+      fileArray.push({name: file, file: zip.file(file).async('string')});
+    }
+    return Promise.resolve(readfile);
+  }).then(function(){
+    fileArray.map(function(f){
+      if(f.file._result){
+        parseCSV(f.file._result, f.name);
+      }
     });
-    $('.menu-toggle').click(function() {
-      toggleSidebar();
-    });
+  });
+}
 
-    $('.yes-destination').click(function(){
 
-    });
-  }
-
-  function toggleSidebar(){
-    $('.navbar').animate({
-      'margin-left': $('.navbar').css('margin-left') == '0px' ? '-210px' : '0px'
-    }, 500);
-    $('.map-container').animate({
-      'margin-left': $('.map-container').css('margin-left') == '0px' ? '210px' : '0px'
-    }, 500);
-  }
+function parseCSV(file, name) {
+  // Parse CSV string
+  new Promise(function(resolve, err) {
+    if(file){
+      var data = Papa.parse(file);
+      var feed = {name: name, data: data.data};
+      dataArray.push(feed);
+    }
+  }).then(function(){
+    return Promise.resolve();
+  }).catch(function(err){
+    console.log(err);
+  });
+}

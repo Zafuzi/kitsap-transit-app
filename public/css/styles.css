@@ -55,7 +55,10 @@ button {
   width: 100%;
   display: inline-block;
   margin-bottom: 16px;
-  padding: 1em;
+  padding-right: 1em;
+}
+.navbar-links a i {
+  padding-right: 1em;
 }
 .navbar-links a:hover {
   color: #4FC3F7;
@@ -84,7 +87,7 @@ nav {
 .navbar-links {
   position: absolute;
   top: 1rem;
-  width: 80%;
+  width: 100%;
 }
 .nav-title {
   font-size: 2rem;
@@ -94,6 +97,13 @@ nav {
 /* Map
 ------------------------------------------*/
 
+main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+}
 .map-overlay {
   width: 50vw;
   position: fixed;
@@ -111,6 +121,14 @@ nav {
   top: 0;
   left: 0;
 }
+.map {
+  height: inherit;
+}
+#u-search {
+  margin: 1rem;
+  width: 50vw !important;
+  display: block;
+}
 .popup-content {}
 .popup-content h5 {
   color: #424242;
@@ -119,38 +137,13 @@ nav {
   line-height: 1.5rem;
   letter-spacing: .25rem;
 }
-.search-container {
-  width: 50vw;
-  position: absolute;
-  right: 25vw;
-  background-color: #fff;
-  padding: 5px 0 0 0;
-  vertical-align: middle;
-}
-#search-toggle {
-  background-color: rgba(0, 0, 0, 0);
-  width: auto;
-  height: inherit;
-  margin: 0 -5px 0 0;
-  padding: 10px;
-  z-index: 2;
-  display: inline;
-  color: #9e9e9e;
-}
-#searchBox {
-  margin: 0;
-  background-color: rgba(0, 0, 0, 0);
-  border: 0px;
-  margin-left: -5px;
-  display: inline;
-  width: 80%;
-}
-@media (max-width: 480px) {
-  .search-container {
-    width: 95vw;
-    position: absolute;
-    right: 0;
-  }
+#menu-toggle-fixed {
+  position: fixed;
+  z-index: 1;
+  color: #fff;
+  top: 0;
+  left: 0;
+  font-size: 3rem;
 }
 
 /* Headers and Labels
@@ -164,7 +157,4 @@ h5 {
 }
 label {
   color: white;
-}
-;
-
 }

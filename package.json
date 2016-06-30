@@ -15,5 +15,8 @@
     "gulp-serve": "^1.2.0",
     "jszip": "^3.0.0",
     "wingcss": "^0.1.2"
+  },
+  "dependencies": {
+    "idb": "^1.1.1"
   }
 }

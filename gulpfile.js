@@ -5,7 +5,9 @@ var jszip = require('jszip');
 
 var jsFiles = {
   vendor: [
-    './node_modules/jquery/dist/jquery.min.js'
+    './node_modules/jquery/dist/jquery.min.js',
+    './node_modules/jszip/dist/jszip.min.js',
+    './node_modules/idb/lib/idb.js'
   ]
 };
 
