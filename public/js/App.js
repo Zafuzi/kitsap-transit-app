@@ -1,4 +1,5 @@
-var tf, lat, lng, zip, fileArray=[], dataArray=[];
+var tf, lat, lng, zip, fileArray = [],
+  dataArray = [];
 
 $(function() {
   getLocation();
@@ -11,8 +12,9 @@ function getLocation() {
       lat = position.coords.latitude;
       lng = position.coords.longitude;
       startApp();
+    }, function(err) {
+      console.log(err);
     });
-
   } else {
     console.log("No support");
   }
@@ -24,9 +26,20 @@ function startApp() {
 }
 
 function addHandlers() {
-  $('.menu-toggle').click(function() {
-    toggleSidebar();
+  //TODO add select handlers
+  $('#agencies').on('change', function(e) {
+    tf._addRoutes(e.target.value);
   });
+}
+
+var a_id = 0;
+class Agency {
+  constructor(files) {
+    this.files = [files];
+    this.json = [];
+    this.id = a_id;
+    a_id++;
+  }
 }
 
 function getZip(url) {
@@ -36,31 +49,41 @@ function getZip(url) {
       return Promise.resolve(response.arrayBuffer());
     }
   }).then(JSZip.loadAsync).then(function readfile(zip) {
-    for(var file in zip.files){
-      fileArray.push({name: file, file: zip.file(file).async('string')});
-    }
-    return Promise.resolve(readfile);
-  }).then(function(){
-    fileArray.map(function(f){
-      if(f.file._result){
-        parseCSV(f.file._result, f.name);
+    for (var file_name in zip.files) {
+      var a;
+      // If there is an agency file, create a new Agency object,
+      // and store that agency file within it,
+      // otherwise keep adding to the current Agency object.
+      if (file_name == "agency.txt") {
+        a = new Agency(zip.file(file_name).async('string'));
+        fileArray.push(a);
+      } else {
+        // If an Agency object exists, add more files
+        if (a) {
+          a.files.push({
+            name: file_name,
+            file: zip.file(file_name).async('string')
+          });
+        } else {
+          return;
+        }
       }
-    });
-  });
-}
-
-
-function parseCSV(file, name) {
-  // Parse CSV string
-  new Promise(function(resolve, err) {
-    if(file){
-      var data = Papa.parse(file);
-      var feed = {name: name, data: data.data};
-      dataArray.push(feed);
     }
-  }).then(function(){
-    return Promise.resolve();
-  }).catch(function(err){
-    console.log(err);
+    return;
   });
 }
+
+function parseCSV(file, name, agent) {
+  worker.postMessage({
+    cmd:'parse',
+    file: file,
+    name: name,
+    agent: agent
+  });
+}
+
+var worker = new Worker('js/parseCSV.js');
+
+worker.addEventListener('message', function(e) {
+  console.log(e.data);
+}, false);

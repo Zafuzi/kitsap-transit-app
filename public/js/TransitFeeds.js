@@ -6,10 +6,10 @@ class TransitFeeds {
   }
   _getLocations() {
     var self = this;
-    var maxLat = self.lat + 0.15;
-    var minLat = self.lat - 0.15;
-    var maxLng = self.lng + 0.15;
-    var minLng = self.lng - 0.15;
+    var maxLat = self.lat + 0.05;
+    var minLat = self.lat - 0.05;
+    var maxLng = self.lng + 0.05;
+    var minLng = self.lng - 0.05;
 
     var feedsURL = 'https://api.transitfeeds.com/v1/getLocations&key=' + this.API_KEY;
     fetch(feedsURL).then(function(response) {
@@ -26,13 +26,15 @@ class TransitFeeds {
   _getFeeds(id) {
     var self = this;
     var loc = self.lat + "," + self.lng;
-    var feedsURL = 'https://api.transitfeeds.com/v1/getFeeds&key=' + this.API_KEY + '&location=' + id;
+    console.log(id);
+    var feedsURL = 'https://api.transitfeeds.com/v1/getFeeds&key=' + this.API_KEY + '&location=' + id + '&page=1';
     fetch(feedsURL).then(function(response) {
       return response.json();
     }).then(function(data) {
-      console.log(data);
       data.results.feeds.map(function(feed) {
-        self._getLatestFeedVersion(feed.id);
+        if (feed.latest) {
+          self._getLatestFeedVersion(feed.id);
+        }
       });
     });
   }
@@ -44,11 +46,12 @@ class TransitFeeds {
         if (response.status === 200) {
           return response.url;
         }
-        if(response.status === 500){
+        if (response.status === 500) {
           console.log(response);
         }
       }).then(function(url) {
-        if(url){
+        console.log(url);
+        if (url) {
           getZip(url);
         }
       })
@@ -56,15 +59,94 @@ class TransitFeeds {
         console.log(err);
       });
   }
-  _getAgencies(){
-    dataArray.map(function(i){
-      if(i.name == "agency.txt"){
-        var option = $('<option>');
-        option.value = i.data[1][1];
-        $(option).text(i.data[1][1]);
-        console.log(option);
-        $('#u-search').append(option);
+  _getAgencies() {
+      var self = this;
+      var agent = -1;
+      fileArray.map(function(agency) {
+        agency.files.map(function(key, f) {
+          if (f === 0) {
+            console.log(f);
+            agent++;
+            parseCSV(key._result, "agency.txt", agent);
+          } else {
+            if (key.file) {
+              parseCSV(key.file._result, key.name, agent);
+            }
+          }
+        });
+      });
+      return Promise.resolve().then(self._addAgencies());
+    }
+    // adds agencies to the select element on the page
+  _addAgencies() {
+    var self = this;
+    var option;
+    $('#agencies').html('');
+
+    fileArray.map(function(agency) {
+      option = $('<option>');
+      var name = agency.json[0].data[1][1];
+      $(option).val(agency.id);
+      $(option).text(name);
+      $('#agencies').append(option);
+    });
+    self._addRoutes(-1);
+    return;
+  }
+  _addRoutes(id) {
+    var self = this;
+    var agency;
+    if (id === -1) {
+      fileArray.map(function(v, k) {
+        self._routeAdder(k);
+      });
+    } else {
+      self._routeAdder(id);
+    }
+  }
+
+  _routeAdder(id) {
+    var self = this;
+    var option;
+    $('#routes').html('');
+    var agency = fileArray[id];
+
+    var name;
+
+    agency.json.map(function(f) {
+      if (f.name == "routes.txt") {
+        f.data.map(function(route, key) {
+          //catch empty route
+          if (!route || route.length < 1) return;
+          //ignore first index (it's just for describing the rest of the data)
+          if (key === 0) return;
+          //catch empty route id and description
+          if (!route[2] || !route[4]) {
+            return;
+          } else {
+            var route_long_name = '' + route[2] + ' ' + route[4] + '';
+            //remove any undefined data that may have slipped by
+            if (route_long_name == "undefined undefined") {
+              return;
+            } else {
+              //TODO index the routes and agencies for on demand data
+              option = $('<option>');
+              option.value = route_long_name;
+              $(option).text(route_long_name);
+              $('#routes').append(option);
+            }
+          }
+          return;
+        });
       }
+      //default data if no data. Changes if data is found
+      var $datalist = $('#routes');
+      if ($datalist.html().length < 1) {
+        $('#routes-input').attr('Placeholder', 'No data was found');
+      } else {
+        $('#routes-input').attr('Placeholder', 'Select a route');
+      }
+
     });
   }
 }
