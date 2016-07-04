@@ -7,17 +7,23 @@ $(function() {
 });
 
 function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      lat = position.coords.latitude;
-      lng = position.coords.longitude;
-      startApp();
-    }, function(err) {
-      console.log(err);
-    });
-  } else {
-    console.log("No support");
-  }
+  // FIXME not currently working for some reason...
+  // if (navigator.geolocation) {
+  //   navigator.geolocation.getCurrentPosition(function(position) {
+  //     lat = position.coords.latitude;
+  //     lng = position.coords.longitude;
+  //     startApp();
+  //     console.log("Got here");
+  //   });
+  // } else {
+  //   lat = 47.6062;
+  //   lng = -122.3321;
+  //   startApp();
+  //   console.log("No support");
+  // }
+  lat = 47.6062;
+  lng = -122.3321;
+  startApp();
 }
 
 function startApp() {
