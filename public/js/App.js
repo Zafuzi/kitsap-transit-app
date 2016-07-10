@@ -139,9 +139,9 @@ function getStopTimes(stopName) {
 	}).then(function(res) {
 		var currentIndex = 0;
 		res.value.map(function(stop, key) {
-			var button = $('<p class="stop-loader">');
+			//var button = $('<p class="stop-loader">');
 			if (stop[0][0] === stopName) {
-				console.log(stop);
+				//console.log(stop);
 				// if (stop[0][4] == 1) {
 				// 	button.html(stop[0][3]);
 				// 	stops.append(button);
