@@ -10,9 +10,11 @@
   "author": "Zachary Foutz (DauntlessTech)",
   "license": "ISC",
   "devDependencies": {
+    "cors": "^2.7.1",
     "gulp": "^3.9.1",
     "gulp-copy": "0.0.2",
     "gulp-serve": "^1.2.0",
+    "gulp-watch": "^4.3.8",
     "jszip": "^3.0.0",
     "wingcss": "^0.1.2"
   },
