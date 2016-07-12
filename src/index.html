@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Sound Transit</title>
     <link href="css/vendor/wing.min.css" rel="stylesheet">
+    <link href="css/vendor/awesomplete.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
   </head>
 
@@ -17,13 +18,15 @@
         </article>
         <article class="container">
           <div class="row">
-            <select type="text" id="routes">
-              <option selected="true" disabled="disabled" value="default">Select an trip</option>
-            </select>
+            <label for="agency_input" class="col-6">
+              <span class="nice-label">What city do you live in?</span>
+              <input type="text" class="awesomplete" list="routes" id="agency_input" />
+              <datalist type="text" id="agencies"></datalist>
+            </label>
           </div>
         </article>
         <article class="container">
-          <div class="row" id="trips"></div>
+          <div class="row" id="routes"></div>
         </article>
         <article class="container">
           <div class="row" id="stops"></div>
@@ -34,8 +37,10 @@
     <script async defer src="js/fonts.js"></script>
     <script src="js/vendor/jquery.min.js"></script>
     <script src="js/vendor/jszip.min.js"></script>
+    <script src="js/vendor/awesomplete.min.js"></script>
     <script src="js/vendor/idb.js"></script>
     <script src="js/vendor/papaparse.min.js"></script>
+
     <script src="//stuk.github.io/jszip-utils/dist/jszip-utils.js"></script>
     <script src="js/App.js"></script>
 

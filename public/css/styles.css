@@ -4,6 +4,7 @@ body, html {
   font-family: 'Raleway', sans-serif;
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 /* Icons
@@ -54,9 +55,16 @@ h5 {
   text-shadow: .01em .01em .01em #424242;
 }
 label {
-  color: white;
+  color: #212121;
 }
-datalist {
-  max-height: 250px;
-  overflow: auto;
+label .nice-label {
+  font-size: 2rem;
+  font-family: 'Lato', sans-serif;
+}
+
+/* Inputs
+------------------------------------------*/
+
+.awesomplete {
+  width: 100% !important;
 }

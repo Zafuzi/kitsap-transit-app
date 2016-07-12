@@ -19,6 +19,9 @@
     "wingcss": "^0.1.2"
   },
   "dependencies": {
-    "idb": "^1.1.1"
+    "alasql": "^0.2.7",
+    "awesomplete": "^1.1.1",
+    "idb": "^1.1.1",
+    "restbus": "^1.1.3"
   }
 }

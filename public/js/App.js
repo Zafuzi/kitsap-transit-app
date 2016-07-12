@@ -9,17 +9,17 @@ idb.then(function(db) {
 }).then(allObjs => {
 	if (allObjs.length < 1) {
 		console.log("Getting GTFS");
-		getZip('./DATA/gtfs.zip').then(JSZip.loadAsync)
+		getZip('./DATA/40_gtfs.zip').then(JSZip.loadAsync)
 			.then(function(zip) {
 				parseCSV(zip)
-					.then(loadRoutes)
+					.then(loadAgencies)
 					.catch(err => console.log(err));
 			})
 			.catch(function(err) {
 				throw new Error(err, " GTFS not Found");
 			});
 	} else {
-		loadRoutes();
+		loadAgencies();
 	}
 });
 
@@ -80,29 +80,63 @@ function addJSON(value, key) {
 	});
 }
 
-function loadRoutes() {
-	console.log("Routes Loading");
-	var routes = $('#routes');
-	idb.then(function(db) {
-		var tx = db.transaction('text-files', 'readwrite');
-		var files = tx.objectStore('text-files').get('routes.txt');
-		if (files) return files;
-	}).then(function(res) {
-		res.value.map(function(route, key) {
-			var option = $('<option>');
-			if (key !== 0 && route[0][0]) {
-				option.val(route[0][0]);
-				option.html(route[0][3]);
-				routes.append(option);
-			}
+function loadAgencies() {
+	console.log("Agencies Loading");
+	var agencies = $('#agencies');
+	fetch('http://localhost:3535/agencies').then(res => {
+		if (res.status === 200) {
+			return res.json();
+		}
+	}).then(json => {
+		console.log(json);
+		var dlist = [];
+		var awesomplete = new Awesomplete($('#agency_input')[0], {
+			autoFirst: true
 		});
+		awesomplete.list = [];
+		json.map(agency => {
+			dlist.push({
+				label: agency.title,
+				value: agency.id
+			});
+		});
+		awesomplete.list = dlist;
+	});
+
+	//TODO store restbus XML into indexedDB
+	// idb.then(function(db) {
+	// 	var tx = db.transaction('text-files', 'readwrite');
+	// 	var files = tx.objectStore('text-files').get('routes.txt');
+	// 	return files;
+	// }).then(function(res) {
+	// 	console.log(res);
+	// 	res.value.map(function(route) {
+	// 		var option = $('<option>');
+	// 		option.val(route[0][1]);
+	// 		option.html('(' + route[0][1] + ') ' + route[0][3]);
+	// 		routes.append(option);
+	// 	});
+	// });
+}
+
+function loadRoutes(agencyID) {
+	console.log("Routes Loading");
+	var agencies = $('#agencies');
+	fetch('http://localhost:3535/agencies/' + agencyID + '/routes').then(res => {
+		if (res.status === 200) {
+			return res.json();
+		}
+	}).then(json => {
+		console.log(json);
 	});
 }
 
 function loadTrips(routeID) {
+	console.log(routeID);
 	console.log("Trips Loading");
 	var trips = $('#trips');
 	trips.html('');
+
 	idb.then(function(db) {
 		var tx = db.transaction('text-files', 'readwrite');
 		var files = tx.objectStore('text-files').get('trips.txt');
@@ -111,45 +145,69 @@ function loadTrips(routeID) {
 		stop_name_array = [];
 		res.value.map(function(trip, key) {
 			if (trip[0][0] && trip[0][0] == routeID) {
-				stop_name_array.push(trip[0][2]);
-				console.log(trip[0][2]);
+				stop_name_array.push({
+					id: trip[0][1],
+					name: trip[0][3]
+				});
 			}
 		});
 		stop_name_array = clearDupes(stop_name_array);
 		console.log(stop_name_array);
 
 		stop_name_array.map(function(st) {
-			var stop_heading = $('<div>');
-			$(stop_heading).attr('id', st);
-			stop_heading.html(st);
-			$('#trips').append(stop_heading);
-			getStopTimes(st);
+			getStopTimes(st.id);
+		});
+	});
+}
+
+function getStops(stopID) {
+	console.log("Stops Loading");
+	var stops = $('#stops');
+	stops.html('');
+	idb.then(function(db) {
+		var tx = db.transaction('text-files', 'readwrite');
+		var files = tx.objectStore('text-files').get('stops.txt');
+		return files;
+	}).then(function(res) {
+		res.value.map(function(stop) {
+			if (stop[0][0] == stopID) {
+				//NOTE check against the calendar times
+				if (stops.find('button').html() == stop[0][4]) {
+					return;
+				} else {
+					var button = $('<button>');
+					button.html(stop[0][4]);
+					stops.append(button);
+					console.log("got here");
+				}
+			}
 		});
 	});
 }
 
 function getStopTimes(stopName) {
-	console.log("Stops Loading");
-	var stops = $('div[id="' + stopName + '"]');
-	stops.find('p').empty();
+	console.log("Stop times loading");
 	idb.then(function(db) {
 		var tx = db.transaction('text-files', 'readwrite');
 		var files = tx.objectStore('text-files').get('stop_times.txt');
 		return files;
 	}).then(function(res) {
-		var currentIndex = 0;
-		res.value.map(function(stop, key) {
-			//var button = $('<p class="stop-loader">');
-			if (stop[0][0] === stopName) {
-				//console.log(stop);
-				// if (stop[0][4] == 1) {
-				// 	button.html(stop[0][3]);
-				// 	stops.append(button);
-				// }
+		res.value.map(function(stopTime) {
+			if (stopTime[0][0] == stopName) {
+				if (stopTime[0][3]) {
+					getStops(stopTime[0][1]);
+				}
 			}
 		});
 	});
 }
+
+Date.prototype.yyyymmdd = function() {
+	var yyyy = this.getFullYear().toString();
+	var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
+	var dd = this.getDate().toString();
+	return yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]); // padding
+};
 
 function clearDupes(array) {
 	var uarray = [];
@@ -160,8 +218,11 @@ function clearDupes(array) {
 }
 
 $(function() {
-	$('#routes').on('change', function(e) {
-		var routeID = e.currentTarget.selectedOptions[0].value;
-		loadTrips(routeID);
+	$("#agency_input").on('awesomplete-selectcomplete', function(e) {
+		console.log(event);
+		var routeID = e.target.value;
+		loadRoutes(routeID);
 	});
+
+
 });

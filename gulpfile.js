@@ -2,19 +2,23 @@ var gulp = require('gulp'),
 	serve = require('gulp-serve'),
 	copy = require('gulp-copy'),
 	cors = require('cors'),
-	watch = require('gulp-watch');
+	watch = require('gulp-watch'),
+	restbus = require('restbus').listen();
 
 var jsFiles = {
 	vendor: [
 		'./node_modules/jquery/dist/jquery.min.js',
 		'./node_modules/jszip/dist/jszip.min.js',
-		'./node_modules/idb/lib/idb.js'
+		'./node_modules/idb/lib/idb.js',
+		'./node_modules/alasql/dist/alasql.min.js',
+		'./node_modules/awesomplete/awesomplete.min.js'
 	]
 };
 
 var styleFiles = {
 	vendor: [
-		'./node_modules/wingcss/dist/wing.min.css'
+		'./node_modules/wingcss/dist/wing.min.css',
+		'./node_modules/awesomplete/awesomplete.css'
 	]
 };
 
@@ -63,6 +67,19 @@ gulp.task('watch-html', function() {
 		.pipe(gulp.dest('public/'));
 });
 
+gulp.task('rest', function() {
+	http.createServer(app).listen('3030', function() {
+		console.log('app is now listening on port 3030');
+		restbus.listen(function() {
+			console.log('restbus is now listening on port 3535');
+		});
+	});
+});
+
 gulp.task('serve', serve('public'));
 
-gulp.task('default', ['copy-js', 'copy-css', 'watch-css', 'watch-js', 'watch-service-worker', 'watch-DATA', 'watch-html', 'serve']);
+gulp.task('default', [
+	'copy-js', 'copy-css', 'watch-css', 'watch-js',
+	'watch-service-worker', 'watch-DATA', 'watch-html',
+	'serve'
+]);
