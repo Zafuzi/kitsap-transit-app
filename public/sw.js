@@ -4,18 +4,11 @@ var urlsToCache = [
 	'/index.html',
 	'/css/vendor/wing.min.css',
 	'/css/styles.css',
-	'/js/vendor/idb.js',
-	'js/vendor/jquery.min.js',
-	'js/vendor/jszip.min.js',
-	'js/vendor/papaparse.min.js',
-	'js/App.js',
-	'js/fonts.js',
-	'js/indexController.js'
+	'js/vendor/vendor.min.js',
+	'js/app.js'
 ];
 
 self.addEventListener('install', function(event) {
-	// Perform install steps
-	// One more
 	event.waitUntil(
 		caches.open(CACHE_NAME)
 		.then(function(cache) {

@@ -1,6 +1,3 @@
-var lat, lng, zip, stop_name_array = [];
-
-var ic = new IndexController();
 var idb = ic._openDatabase();
 
 idb.then(function(db) {
@@ -19,7 +16,7 @@ idb.then(function(db) {
 				throw new Error(err, " GTFS not Found");
 			});
 	} else {
-		loadAgencies();
+		//loadAgencies();
 	}
 });
 
@@ -77,57 +74,6 @@ function addJSON(value, key) {
 			value: value
 		});
 		return tx.complete;
-	});
-}
-
-function loadAgencies() {
-	console.log("Agencies Loading");
-	var agencies = $('#agencies');
-	fetch('http://localhost:3535/agencies').then(res => {
-		if (res.status === 200) {
-			return res.json();
-		}
-	}).then(json => {
-		console.log(json);
-		var dlist = [];
-		var awesomplete = new Awesomplete($('#agency_input')[0], {
-			autoFirst: true
-		});
-		awesomplete.list = [];
-		json.map(agency => {
-			dlist.push({
-				label: agency.title,
-				value: agency.id
-			});
-		});
-		awesomplete.list = dlist;
-	});
-
-	//TODO store restbus XML into indexedDB
-	// idb.then(function(db) {
-	// 	var tx = db.transaction('text-files', 'readwrite');
-	// 	var files = tx.objectStore('text-files').get('routes.txt');
-	// 	return files;
-	// }).then(function(res) {
-	// 	console.log(res);
-	// 	res.value.map(function(route) {
-	// 		var option = $('<option>');
-	// 		option.val(route[0][1]);
-	// 		option.html('(' + route[0][1] + ') ' + route[0][3]);
-	// 		routes.append(option);
-	// 	});
-	// });
-}
-
-function loadRoutes(agencyID) {
-	console.log("Routes Loading");
-	var agencies = $('#agencies');
-	fetch('http://localhost:3535/agencies/' + agencyID + '/routes').then(res => {
-		if (res.status === 200) {
-			return res.json();
-		}
-	}).then(json => {
-		console.log(json);
 	});
 }
 
@@ -201,28 +147,3 @@ function getStopTimes(stopName) {
 		});
 	});
 }
-
-Date.prototype.yyyymmdd = function() {
-	var yyyy = this.getFullYear().toString();
-	var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
-	var dd = this.getDate().toString();
-	return yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]); // padding
-};
-
-function clearDupes(array) {
-	var uarray = [];
-	array.map(function(el, i) {
-		if ($.inArray(el, uarray) === -1) uarray.push(el);
-	});
-	return uarray;
-}
-
-$(function() {
-	$("#agency_input").on('awesomplete-selectcomplete', function(e) {
-		console.log(event);
-		var routeID = e.target.value;
-		loadRoutes(routeID);
-	});
-
-
-});

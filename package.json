@@ -13,6 +13,7 @@
     "cors": "^2.7.1",
     "gulp": "^3.9.1",
     "gulp-copy": "0.0.2",
+    "gulp-minify": "0.0.12",
     "gulp-serve": "^1.2.0",
     "gulp-watch": "^4.3.8",
     "jszip": "^3.0.0",
@@ -21,7 +22,11 @@
   "dependencies": {
     "alasql": "^0.2.7",
     "awesomplete": "^1.1.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-uglify": "^1.5.4",
     "idb": "^1.1.1",
+    "jszip": "^3.0.0",
+    "papaparse": "^4.1.2",
     "restbus": "^1.1.3"
   }
 }

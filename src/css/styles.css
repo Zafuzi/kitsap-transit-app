@@ -10,6 +10,27 @@ body, html {
 /* Icons
 ------------------------------------------*/
 
+header {
+  margin: 0;
+  padding: 0;
+}
+.navbar {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: auto;
+  min-height: 32px;
+  background-color: #fff;
+  display: inline-block;
+}
+#nav-search input {
+  margin-top: 0;
+  z-index: 2;
+}
+
+/* Icons
+------------------------------------------*/
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
@@ -67,4 +88,76 @@ label .nice-label {
 
 .awesomplete {
   width: 100% !important;
+  z-index: 3;
+}
+
+/* Map
+------------------------------------------*/
+
+main {
+  height: 100vh;
+}
+#map {
+  display: block;
+  height: 100vh;
+  width: 75vw;
+  margin: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+#nav_list {
+  width: 25vw;
+  position: absolute;
+  left: 0;
+  height: 100vh;
+  overflow: auto;
+  padding: 0;
+  margin: 0;
+  top: 0;
+}
+#nav_list_top {
+  width: inherit;
+  position: absolute;
+  left: 0;
+  height: 10vh;
+  padding: 0;
+  margin: 0;
+  top: 0;
+}
+#nav_list_bottom {
+  display: inline-block;
+  width: inherit;
+  position: absolute;
+  left: 0;
+  height: 95vh;
+  overflow: auto;
+  padding: 0;
+  margin: 0;
+  bottom: 0;
+}
+#nav_list_bottom ul {
+  padding: 0;
+  margin: 0;
+}
+#nav_list_bottom ul li {
+  list-style-type: none;
+  padding: 1rem;
+  width: 100%;
+  background-color: #424242;
+  color: #fff;
+  margin: 0;
+}
+#nav_list_bottom ul li:hover {
+  background-color: #fff;
+  color: #424242;
+}
+@media only screen and (max-width: 720px) {
+  #map {
+    width: 100vw;
+  }
+  #routes {
+    width: 0;
+  }
 }

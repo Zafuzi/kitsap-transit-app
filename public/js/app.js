@@ -1,3 +1,61 @@
+class IndexController {
+	constructor() {
+		this._registerServiceWorker();
+	}
+
+	_registerServiceWorker() {
+		var self = this;
+
+		navigator.serviceWorker.register('sw.js').then(function(registration) {
+			console.log("here reg");
+			navigator.serviceWorker.addEventListener('controllerchange', function(event) {
+				console.log("here controller change");
+				navigator.serviceWorker.controller.addEventListener('statechange', function() {
+					console.log("here state change");
+					if (this.state === 'activated') {
+						console.log("offline okay");
+					} else {
+						console.log(this.state);
+					}
+				});
+			});
+		});
+	}
+
+	_openDatabase() {
+		if (!navigator.serviceWorker) {
+			console.log("Error loading database");
+			return Promise.resolve();
+		}
+		return idb.open('sound-transit-app', 1, function(upgradeDb) {
+			switch (upgradeDb.oldVersion) {
+				case 0:
+					var store = upgradeDb.createObjectStore('text-files', {
+						keyPath: 'name'
+					});
+			}
+		});
+	}
+}
+
+class Map {
+	//CONSTRUCTOR
+	constructor(el, key, location, zoom) {
+		this.el = el;
+		this.key = key;
+		this.location = location;
+		this.zoom = zoom;
+	}
+
+	_createMap() {
+		var self = this;
+		L.mapbox.accessToken = self.key;
+		mapLayer = L.mapbox.map(self.el, 'mapbox.streets')
+			.setView(self.location, self.zoom);
+		//loadAgencies();
+	}
+}
+
 var markers = [],
 	map, mapLayer, myLayer, featureLayer, infoWindow,
 	key = 'AIzaSyA27n8DdEogq7VwNiyE3MZMyyYUyGGpDHY',
@@ -247,3 +305,17 @@ Date.prototype.yyyymmdd = function() {
 	var dd = this.getDate().toString();
 	return yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]); // padding
 };
+
+WebFontConfig = {
+  google: {
+    families: ['Raleway,500,700::latin', 'Lato,300,500,900::latin', 'Material+Icons::latin']
+  }
+};
+(function () {
+  var wf = document.createElement('script');
+  wf.src = 'https://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+  wf.type = 'text/javascript';
+  wf.async = 'true';
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(wf, s);
+})();
