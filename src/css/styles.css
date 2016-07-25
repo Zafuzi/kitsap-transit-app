@@ -1,10 +1,11 @@
 body, html {
-  overflow-x: hidden;
+  overflow: auto;
   font-size: 1rem;
   font-family: 'Raleway', sans-serif;
   margin: 0;
   padding: 0;
   height: 100vh;
+  word-wrap: break-word;
 }
 
 /* Icons
@@ -36,7 +37,6 @@ header {
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
-  /* Preferred icon size */
   display: inline-block;
   line-height: 1;
   text-transform: none;
@@ -44,13 +44,9 @@ header {
   word-wrap: normal;
   white-space: nowrap;
   direction: ltr;
-  /* Support for all WebKit browsers. */
   -webkit-font-smoothing: antialiased;
-  /* Support for Safari and Chrome. */
   text-rendering: optimizeLegibility;
-  /* Support for Firefox. */
   -moz-osx-font-smoothing: grayscale;
-  /* Support for IE. */
   font-feature-settings: 'liga';
 }
 
@@ -68,12 +64,12 @@ button {
 
 /* Headers and Labels
 ------------------------------------------*/
-
-h5 {
-  color: white;
-  font-family: 'Lato', sans-serif;
-  font-weight: 900;
-  text-shadow: .01em .01em .01em #424242;
+h1, h2, h3, h4, h5{
+  font-family: 'Lato';
+  color: #616161;
+}
+h5{
+  font-size: 1.5rem;
 }
 label {
   color: #212121;
@@ -97,67 +93,8 @@ label .nice-label {
 main {
   height: 100vh;
 }
-#map {
-  display: block;
-  height: 100vh;
-  width: 75vw;
-  margin: 0;
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1;
-}
-#nav_list {
-  width: 25vw;
-  position: absolute;
-  left: 0;
-  height: 100vh;
-  overflow: auto;
-  padding: 0;
-  margin: 0;
-  top: 0;
-}
-#nav_list_top {
-  width: inherit;
-  position: absolute;
-  left: 0;
-  height: 10vh;
-  padding: 0;
-  margin: 0;
-  top: 0;
-}
-#nav_list_bottom {
-  display: inline-block;
-  width: inherit;
-  position: absolute;
-  left: 0;
-  height: 95vh;
-  overflow: auto;
-  padding: 0;
-  margin: 0;
-  bottom: 0;
-}
-#nav_list_bottom ul {
-  padding: 0;
-  margin: 0;
-}
-#nav_list_bottom ul li {
-  list-style-type: none;
-  padding: 1rem;
-  width: 100%;
-  background-color: #424242;
-  color: #fff;
-  margin: 0;
-}
-#nav_list_bottom ul li:hover {
-  background-color: #fff;
-  color: #424242;
-}
-@media only screen and (max-width: 720px) {
-  #map {
-    width: 100vw;
-  }
-  #routes {
-    width: 0;
-  }
+
+.padded{
+  padding: 25px;
+  font-size: 1rem;
 }
