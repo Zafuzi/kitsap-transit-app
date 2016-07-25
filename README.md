@@ -4,7 +4,7 @@ This is a simple application that allows riders in the Seattle metro area to qui
 
 ## Instructions
 
-- git clone <https://github.com/DauntlessTech/sound-transit-app> MyAppName
-- cd ./MyAppName
+- git clone <https://github.com/DauntlessTech/kitsap-transit-app>
+- cd ./kitsap-transit-app
 - npm install
-- npm run serve
+- npm run start

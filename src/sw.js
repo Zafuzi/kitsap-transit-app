@@ -1,4 +1,4 @@
-var CACHE_NAME = 'stache-v1';
+var CACHE_NAME = 'stache-v2';
 var urlsToCache = [
 	'/',
 	'/index.html',

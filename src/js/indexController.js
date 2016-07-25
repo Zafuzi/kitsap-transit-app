@@ -5,7 +5,6 @@ class IndexController {
 
 	_registerServiceWorker() {
 		var self = this;
-
 		navigator.serviceWorker.register('sw.js').then(function(registration) {
 			console.log("here reg");
 			navigator.serviceWorker.addEventListener('controllerchange', function(event) {
@@ -28,6 +27,7 @@ class IndexController {
 			return Promise.resolve();
 		}
 		return idb.open('sound-transit-app', 1, function(upgradeDb) {
+			console.log('got here');
 			switch (upgradeDb.oldVersion) {
 				case 0:
 					var store = upgradeDb.createObjectStore('text-files', {
