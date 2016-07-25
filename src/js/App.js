@@ -2,7 +2,7 @@ var ic = new IndexController(),
   idb = ic._openDatabase(),
   dbc = new DatabaseController(),
   taf, gtfs, stops = [],
-  worker, currentTrips, currentStopTimes, tripType;
+  worker, currentTrips, currentStopTimes, tripType = "start";
 
 $(function() {
   /*
@@ -39,6 +39,7 @@ $(function() {
     stops = [];
     loadStops(routeID);
   });
+
   $("#stop_table").on('change', function(e) {
     var stopID = e.target.value;
     var stop_data = dbc._getStop(stopID);
@@ -46,35 +47,38 @@ $(function() {
     var oldtime, oldkey;
     stops.map((stop_data, key) => {
       if (stop_data.id == stopID) {
+        var start_button = $('<button class="row padded start_button">');
+        var end_button = $('<button class="row padded end_button">');
         switch (tripType) {
           case 'start':
             //start times
             $('#times_table').append(
-              $('<button class="row padded start_button">').text(formatTime(stop_data.stoptime.departure_time))
+              start_button.text(formatTime(stop_data.stoptime.departure_time))
               .data('label', [stop_data.routeID, stop_data.stop.stop_name, stop_data.stoptime.departure_time])
+              .data('elid', stop_data.stoptime.departure_time)
               .attr('id', stop_data.routeID)
             );
+            $('.start_button').on('click', function(e) {
+              var id = e.target.id;
+              var data = $('#' + id).data('label')[0] + ' | ' + $('#' + id).data('label')[1] + ' ' + $('#' + id).data('label')[2];
+              $('#departure_header').text(data);
+            });
             break;
           case 'end':
             //start times
             $('#times_table').append(
-              $('<button class="row padded end_button">').text(formatTime(stop_data.stoptime.departure_time))
+              end_button.text(formatTime(stop_data.stoptime.departure_time))
               .data('label', [stop_data.routeID, stop_data.stop.stop_name, stop_data.stoptime.departure_time])
               .attr('id', stop_data.routeID)
             );
+            end_button.on('click', function(e) {
+              var id = e.target.id;
+              var data = $('#' + id).data('label')[0] + ' | ' + $('#' + id).data('label')[1] + ' ' + $('#' + id).data('label')[2];
+              $('#arrival_header').text(data);
+            });
             break;
         }
       }
-    });
-    $('.start_button').click(function(e) {
-      var id = e.target.id;
-      var data = $('#' + id).data('label')[0] + ' | ' + $('#' + id).data('label')[1] + ' ' + $('#' + id).data('label')[2];
-      $('#departure_header').text(data);
-    });
-    $('.end_button').click(function(e) {
-      var id = e.target.id;
-      var data = $('#' + id).data('label')[0] + ' | ' + $('#' + id).data('label')[1] + ' ' + $('#' + id).data('label')[2];
-      $('#arrival_header').text(data);
     });
   });
   $('#choose_departure').on('click', function() {
